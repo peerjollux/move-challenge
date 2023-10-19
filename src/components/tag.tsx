@@ -80,6 +80,12 @@ export function Tag({ value, onDelete, onValueChange }: TagProps) {
     setInputValue(event.target.value);
   };
 
+  const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Escape") {
+      setEditing(false);
+    }
+  };
+
   const onEdit = () => {
     setInputValue(value);
     setEditing(true);
@@ -112,6 +118,7 @@ export function Tag({ value, onDelete, onValueChange }: TagProps) {
               ref={ref}
               value={inputValue}
               role="textbox"
+              onKeyDown={onKeyDown}
               onChange={onChange}
               minLength={TAG_MIN_LENGTH}
               maxLength={TAG_MAX_LENGTH}

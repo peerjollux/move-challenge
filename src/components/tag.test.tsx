@@ -68,6 +68,15 @@ describe("<Tag />", () => {
       await userEvent.keyboard("{enter}");
       expect(input).not.toBeInTheDocument();
     });
+
+    it("should cancel editing on escape", async () => {
+      const input = screen.getByRole("textbox");
+      await userEvent.type(input, "bar");
+      await userEvent.keyboard("{escape}");
+
+      expect(input).not.toBeInTheDocument();
+      expect(onValueChange).not.toBeCalled();
+    });
   });
 
   it("should trigger onDelete", async () => {
