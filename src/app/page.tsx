@@ -1,7 +1,8 @@
 "use client";
+import React, { useEffect } from "react";
 import { Tag } from "@/components/tag";
 import { TagForm } from "@/components/tag-form";
-import { useState } from "react";
+import { getTags } from "@/data/api";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -24,7 +25,19 @@ const TagList = styled.ul`
 `;
 
 export default function Home() {
-  const [tags, setTags] = useState<string[]>(["Apple", "Banana", "Orange"]);
+  const [loading, setLoading] = React.useState(false);
+  const [tags, setTags] = React.useState<string[]>([]);
+
+  useEffect(() => {
+    loadTags();
+  }, []);
+
+  const loadTags = async () => {
+    setLoading(true);
+    const { tags } = await getTags();
+    setTags(tags);
+    setLoading(false);
+  };
 
   const addTag = (value: string) => {
     setTags([...tags, value]);
@@ -45,17 +58,21 @@ export default function Home() {
   return (
     <Container>
       <TagForm onSubmit={addTag} />
-      <TagList>
-        {tags.map((tag, index) => (
-          <li key={index}>
-            <Tag
-              value={tag}
-              onValueChange={(newValue) => updateTag(index, newValue)}
-              onDelete={() => deleteTag(index)}
-            />
-          </li>
-        ))}
-      </TagList>
+      {loading ? (
+        <p>Loading your tags...</p>
+      ) : (
+        <TagList>
+          {tags.map((tag, index) => (
+            <li key={index}>
+              <Tag
+                value={tag}
+                onValueChange={(newValue) => updateTag(index, newValue)}
+                onDelete={() => deleteTag(index)}
+              />
+            </li>
+          ))}
+        </TagList>
+      )}
     </Container>
   );
 }
